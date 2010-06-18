@@ -41,6 +41,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.ReportService;
 import org.openmrs.api.SerializationService;
 import org.openmrs.api.UserService;
+import org.openmrs.api.VisitService;
 import org.openmrs.arden.ArdenService;
 import org.openmrs.hl7.HL7Service;
 import org.openmrs.logic.LogicService;
@@ -879,4 +880,12 @@ public class ServiceContext implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
+
+    public VisitService getVisitService() {
+        return getService(VisitService.class);
+    }
+
+    public void setVisitService(VisitService visitService){
+        setService(VisitService.class,visitService);
+    }
 }

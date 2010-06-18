@@ -1384,7 +1384,6 @@ public class ConceptServiceImpl extends BaseOpenmrsService implements ConceptSer
 	/**
 	 * @see org.openmrs.api.ConceptService#getFalseConcept()
 	 */
-	@Override
 	public Concept getFalseConcept() {
 		if (falseConcept == null)
 			setBooleanConcepts();
@@ -1395,7 +1394,6 @@ public class ConceptServiceImpl extends BaseOpenmrsService implements ConceptSer
 	/**
 	 * @see org.openmrs.api.ConceptService#getTrueConcept()
 	 */
-	@Override
 	public Concept getTrueConcept() {
 		if (trueConcept == null)
 			setBooleanConcepts();
@@ -1485,7 +1483,6 @@ public class ConceptServiceImpl extends BaseOpenmrsService implements ConceptSer
 	/**
 	 * @see org.openmrs.api.ConceptService#convertBooleanConceptToCoded(org.openmrs.Concept)
 	 */
-	@Override
 	public void convertBooleanConceptToCoded(Concept conceptToChange) throws APIException {
 		if (conceptToChange != null) {
 			if (!conceptToChange.getDatatype().isBoolean())

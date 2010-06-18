@@ -51,6 +51,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.ReportService;
 import org.openmrs.api.SerializationService;
 import org.openmrs.api.UserService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.db.ContextDAO;
 import org.openmrs.arden.ArdenService;
 import org.openmrs.hl7.HL7Service;
@@ -1113,4 +1114,8 @@ public class Context {
 	public static <T extends Object> List<T> getRegisteredComponents(Class<T> type) {
 		return getServiceContext().getRegisteredComponents(type);
 	}
+
+    public static VisitService getVisitService() {
+        return getServiceContext().getVisitService();
+    }
 }

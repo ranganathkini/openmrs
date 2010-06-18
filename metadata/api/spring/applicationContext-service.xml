@@ -83,7 +83,8 @@
         <property name="hl7Service"><ref bean="hL7Service"/></property>
         <property name="ardenService"><ref bean="ardenService"/></property>
         <property name="messageSourceService"><ref bean="messageSourceService"/></property>
-	</bean>	
+        <property name="visitService"><ref bean="visitService"/></property>
+	</bean>
 	
 	<bean id="context" class="org.openmrs.api.context.Context">
         <property name="serviceContext"><ref bean="serviceContext"/></property>
@@ -162,6 +163,9 @@
 	<bean id="hL7DAO" class="org.openmrs.hl7.db.hibernate.HibernateHL7DAO">
 		<property name="sessionFactory"><ref bean="sessionFactory"/></property>	
 	</bean>
+    <bean id="visitDAO" class="org.openmrs.api.db.hibernate.HibernateVisitDAO">
+        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+    </bean>
 
 	<!--  **************************  SCHEDULER SERVICE  *************************  -->
 	<!-- 
@@ -323,7 +327,11 @@
 		<property name="activeMessageSource"><ref bean="mutableResourceBundleMessageSource"/>
 		</property>
 	</bean>
-	
+
+    <bean id="visitServiceTarget" class="org.openmrs.api.impl.VisitServiceImpl">
+        <property name="visitDAO"><ref bean="visitDAO"/></property>
+    </bean>
+    
 	<bean id="transactionAttributeSource" class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
 		
 	<bean id="mutableResourceBundleMessageSource" class="org.openmrs.messagesource.impl.MutableResourceBundleMessageSource">
@@ -529,7 +537,16 @@
 		</property>
 		<property name="transactionAttributeSource"><ref local="transactionAttributeSource" /></property>
 	</bean>
-	
+
+    <bean id="visitService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager"><ref local="transactionManager"/></property>
+        <property name="target"><ref local="visitServiceTarget"/></property>
+        <property name="preInterceptors">
+            <ref local="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource"><ref local="transactionAttributeSource"/></property>
+    </bean>
+    
 	<!--
 		Scheduler service bean pool.
 	--><!--
