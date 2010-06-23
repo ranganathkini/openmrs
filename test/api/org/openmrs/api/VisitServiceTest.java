@@ -14,6 +14,7 @@
 package org.openmrs.api;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.Verifies;
 
 public class VisitServiceTest extends BaseContextSensitiveTest {
 	
@@ -29,6 +31,19 @@ public class VisitServiceTest extends BaseContextSensitiveTest {
 	@Test
 	public void saveVisit_shouldSaveVisit() throws Exception {
 		executeDataSet(INITIAL_CONCEPTS_XML);
+		Visit visit = createVisit();
+		
+		Visit savedVisit = Context.getVisitService().saveVisit(visit);
+		Assert.assertNotNull(savedVisit.getVisitId());
+		Assert.assertNotNull(savedVisit.getId());
+	}
+	
+	/**
+	 * Method to create a visit
+	 * 
+	 * @return
+	 */
+	private Visit createVisit() {
 		Visit visit = new Visit();
 		visit.setPerson(Context.getPersonService().getPerson(1));
 		visit.setLocation(Context.getLocationService().getLocation(1));
@@ -37,9 +52,19 @@ public class VisitServiceTest extends BaseContextSensitiveTest {
 		visit.setStartReason(Context.getConceptService().getConcept(1));
 		visit.setEndReason(Context.getConceptService().getConcept(2));
 		visit.setVisitType(VisitType.IN_PATIENT);
-		
-		Visit savedVisit = Context.getVisitService().saveVisit(visit);
-		Assert.assertNotNull(savedVisit.getVisitId());
-		Assert.assertNotNull(savedVisit.getId());
+		return visit;
+	}
+	
+	/**
+	 * @see {@link VisitService#getAllVisits()}
+	 */
+	@Test
+	@Verifies(value = "should get all visits", method = "getAllVisits()")
+	public void getAllVisits_shouldGetAllVisits() throws Exception {
+		executeDataSet(INITIAL_CONCEPTS_XML);
+		Context.getVisitService().saveVisit(createVisit());
+		Context.getVisitService().saveVisit(createVisit());
+		List<Visit> visits = Context.getVisitService().getAllVisits();
+		Assert.assertEquals(2, visits.size());
 	}
 }

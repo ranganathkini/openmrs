@@ -24,7 +24,7 @@ public class VisitServiceImpl extends BaseOpenmrsService implements VisitService
 	private VisitDAO visitDAO;
 	
 	public List<Visit> getAllVisits() {
-		return null;
+		return getVisitDAO().getAllVisits();
 	}
 	
 	public Visit saveVisit(Visit visit) {
