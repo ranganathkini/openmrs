@@ -182,7 +182,8 @@ table#labTestTable th {
                           	}],
                           	{ 
 								xaxis: { 
-										mode: "time",minTickSize: [1, "month"]
+										mode: "time",minTickSize: [1, "month"], timeformat: "%b-%y"
+
 										},
 								yaxis: {
 										min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10
