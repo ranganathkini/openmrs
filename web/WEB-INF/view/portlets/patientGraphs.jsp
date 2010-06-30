@@ -151,7 +151,7 @@ table#labTestTable th {
 						  $j.plot($j('#conceptBox-${conceptId}'),
 						  [
 						  {
-						  	data:json.data,lines:{show:true},color:"rgb(0,0,0)",
+						  	data:json.data,lines:{show:true},points: { show: true },color:"rgb(0,0,0)",
 						  	constraints:
 						  	[
 						  	{
@@ -205,6 +205,6 @@ table#labTestTable th {
 				</c:if>
 			</c:forEach>
 		}
-		window.setTimeout(loadGraphs, 1000);		
+		window.setTimeout(loadGraphs, 1000);
 	</script>
 	
