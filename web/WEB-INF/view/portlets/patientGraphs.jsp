@@ -148,7 +148,7 @@ table#labTestTable th {
 				<openmrs:globalProperty var="colorCritical" key="graph.color.critical"/>
 				
 					$j.getJSON("patientGraphJson.form?patientId=${patient.patientId}&conceptId=${conceptId}", function(json){
-						  $j.plot($j('#conceptBox-${conceptId}'),
+						  var plot = $j.plot($j('#conceptBox-${conceptId}'),
 						  [
 						  {
 						  	data:json.data,lines:{show:true},points: { show: true },color:"rgb(0,0,0)",
@@ -187,21 +187,33 @@ table#labTestTable th {
 										},
 								yaxis: {
 										min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10
-						  				}
+						  				},
+						  		grid: { hoverable: true, clickable: true }
 							}
                           );
 						  
-							function findMaxAndMin(dataset) {
-								if(undefined == dataset)return undefined;
+						  function findMaxAndMin(dataset) {
+							if(undefined == dataset)return undefined;
 								var arr = [];
 								for( var i=0;i<dataset.length;i++){
 								   arr[i] = dataset[i][1];
-								}
-								arr.sort(function(p1,p2){return p1-p2});
-								return { min:arr[0],max:arr[arr.length-1]};
 							}
+							arr.sort(function(p1,p2){return p1-p2});
+							return { min:arr[0],max:arr[arr.length-1]};
+						  }
+						  
+						  function showToolTip(x,y,contents){
+						  	alert("showing tooltip");
+						  }	
+						
+						  $('#conceptBox-${conceptId}').bind("plotclick", function (event, pos, item) {
+						  	showToolTip();
+						  	plot.highlight(item.series, item.datapoint);
+						  });
 					}
 					);
+					
+					
 				</c:if>
 			</c:forEach>
 		}
