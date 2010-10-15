@@ -405,7 +405,7 @@ public class ObsTableWidget extends TagSupport {
     }
 
     private String getConceptName(Locale loc, Concept c) {
-        ConceptName cn = c.getShortestName(loc, false);
+        ConceptName cn = c.getName();
         return cn.getName();
     }
 

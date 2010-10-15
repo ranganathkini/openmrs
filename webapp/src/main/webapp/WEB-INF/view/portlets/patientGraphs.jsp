@@ -93,9 +93,13 @@ table#labTestTable th {
 				<c:if test="${conceptId != ''}">
 					<tr>
 						<td>
-						<div>
-						<div  style="margin: 0pt auto; height: 300px; width: 600px; align: center" align="center" id="conceptBox-${conceptId}"><spring:message
-							code="general.loading" /></div>
+						<div id="conceptBox-${conceptId}" style="text-align: center;">
+						<h1>
+							<span class="conceptGraphTitle"></span>
+							<spring:message code="patientDashboard.graphs.title"/>
+						</h1>
+						<div style="margin: 10px auto; height: 300px; width: 600px; align: center;" align="center" id="conceptGraphBox-${conceptId}">
+							<spring:message code="general.loading" /></div>
 						<div align="center">
 						<div style="width: 750px; overflow: auto; border: 1px solid black;">
 		
@@ -148,7 +152,9 @@ table#labTestTable th {
 				<openmrs:globalProperty var="colorCritical" key="graph.color.critical"/>
 				
 					$j.getJSON("patientGraphJson.form?patientId=${patient.patientId}&conceptId=${conceptId}", function(json){
-						  var plot = $j.plot($j('#conceptBox-${conceptId}'),
+						  $j("#conceptBox-${conceptId} .conceptGraphTitle").html(json.name);
+						
+						  var plot = $j.plot($j('#conceptGraphBox-${conceptId}'),
 						  [{
 						  	data: json.data, 
 						  	lines:{show:true}, 
@@ -174,8 +180,8 @@ table#labTestTable th {
                            	    color: "${colorCritical}"
                           	}]
                           }], {
-	                          xaxis: {mode: "time",minTickSize: [1, "month"]},
-							  yaxis: {min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10},
+	                          xaxis: {mode: "time", timeformat: "%b %y", minTickSize: [1, "month"]},
+							  yaxis: {min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10, tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) + " " + json.units }},
 						  	  grid: { hoverable: true, clickable: true }
 							});
 						  
@@ -210,7 +216,7 @@ table#labTestTable th {
 							 $j("#tooltip").remove();
 							 plot.unhighlight();
 							 if (item) {
-							  	showToolTip(item.pageX, item.pageY, "" + formatDate(new Date(item.datapoint[0])) + ": " + item.datapoint[1]);
+							  	showToolTip(item.pageX, item.pageY, "" + formatDate(new Date(item.datapoint[0])) + ": " + item.datapoint[1] + " " + json.units);
 							  	plot.highlight(item.series, item.datapoint);
 							 }
 						  });
