@@ -148,62 +148,78 @@ table#labTestTable th {
 				<openmrs:globalProperty var="colorCritical" key="graph.color.critical"/>
 				
 					$j.getJSON("patientGraphJson.form?patientId=${patient.patientId}&conceptId=${conceptId}", function(json){
-						  $j.plot($j('#conceptBox-${conceptId}'),
-						  [
-						  {
-						  	data:json.data,lines:{show:true},color:"rgb(0,0,0)",
-						  	constraints:
-						  	[
-						  	{
+						  var plot = $j.plot($j('#conceptBox-${conceptId}'),
+						  [{
+						  	data: json.data, 
+						  	lines:{show:true}, 
+						  	points: { show: true }, 
+						  	color:"rgb(0,0,0)",
+						  	constraints: [{
                            	    threshold: {above:json.normal.high},
                            	    color: "${colorNormal}"
-                          	},
-                          	{
-                           	    threshold: {below:json.normal.low},
+                          	}, {
+                              	threshold: {below:json.normal.low},
                            	    color: "${colorNormal}"
-                          	},
-                          	{
+                          	}, {
                            	    threshold: {above:json.absolute.high},
                            	    color: "${colorAbsolute}"
-                          	},
-                          	{
+                          	}, {
                            	    threshold: {below:json.absolute.low},
                            	    color: "${colorAbsolute}"
-                          	},
-                          	{
+                          	}, {
                            	    threshold: {above:json.critical.high},
                            	    color: "${colorCritical}"
-                          	},
-                          	{
+                          	}, {
                            	    threshold: {below:json.critical.low},
                            	    color: "${colorCritical}"
-                          	}	                        
-                          	]
-                          	}],
-                          	{ 
-								xaxis: { 
-										mode: "time",minTickSize: [1, "month"]
-										},
-								yaxis: {
-										min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10
-						  				}
-							}
-                          );
+                          	}]
+                          }], {
+	                          xaxis: {mode: "time",minTickSize: [1, "month"]},
+							  yaxis: {min: findMaxAndMin(json.data).min-10, max: findMaxAndMin(json.data).max+10},
+						  	  grid: { hoverable: true, clickable: true }
+							});
 						  
-							function findMaxAndMin(dataset) {
-								if(undefined == dataset)return undefined;
+						  function findMaxAndMin(dataset) {
+							if(undefined == dataset)return undefined;
 								var arr = [];
 								for( var i=0;i<dataset.length;i++){
 								   arr[i] = dataset[i][1];
-								}
-								arr.sort(function(p1,p2){return p1-p2});
-								return { min:arr[0],max:arr[arr.length-1]};
 							}
-					}
-					);
+							arr.sort(function(p1,p2){return p1-p2});
+							return { min:arr[0],max:arr[arr.length-1]};
+						  }
+						  
+						  function showToolTip(x, y, contents){
+							  $j('<div id="tooltip">' + contents + '</div>').css( {
+						            position: 'absolute',
+						            display: 'none',
+						            top: y + 5,
+						            left: x + 5,
+						            border: '1px solid #fdd',
+						            padding: '2px',
+						            'background-color': '#fee',
+						            opacity: 0.80
+						        }).appendTo("body").fadeIn(200);
+						  }
+
+						  function formatDate(dateToFormat) {
+							return "" + dateToFormat.getDate() + "/" + (dateToFormat.getMonth() + 1) + "/" + dateToFormat.getFullYear();
+						  }
+						
+						  $j("#conceptBox-${conceptId}").bind("plothover", function (event, pos, item) {
+							 $j("#tooltip").remove();
+							 plot.unhighlight();
+							 if (item) {
+							  	showToolTip(item.pageX, item.pageY, "" + formatDate(new Date(item.datapoint[0])) + ": " + item.datapoint[1]);
+							  	plot.highlight(item.series, item.datapoint);
+							 }
+						  });
+					});
+					
+					
 				</c:if>
 			</c:forEach>
 		}
-		window.setTimeout(loadGraphs, 1000);		
+		window.setTimeout(loadGraphs, 1000);
 	</script>
 	
